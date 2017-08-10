@@ -50,6 +50,7 @@ export default class Carousel extends Component {
     chosenBulletStyle: Text.propTypes.style,
     onAnimateNextPage: PropTypes.func,
     swipe: PropTypes.bool,
+    extraData: PropTypes.object
   };
 
   static defaultProps = {
@@ -75,6 +76,7 @@ export default class Carousel extends Component {
     rightArrowText: '',
     onAnimateNextPage: undefined,
     swipe: true,
+    extraData: undefined
   };
 
   constructor(props) {
@@ -122,7 +124,7 @@ export default class Carousel extends Component {
 
   _setUpPages() {
     const children = this.props.data;
-    if (children && children.length > 0) {
+    if (children && children.length > 1) {
       const { size } = this.state;
       let pages = [];
       // add all pages
@@ -132,6 +134,8 @@ export default class Carousel extends Component {
       pages.push(children[0]);
       pages.push(children[1]);
       this.setState({ contents: pages });
+    } else if (children && children.length == 1) {
+      this.setState({ contents: children });
     }
   }
 
@@ -346,6 +350,10 @@ export default class Carousel extends Component {
               height: size.height,
             },
           ]}
+          extraData={this.props.extraData}
+          getItemLayout={(data, index) => (
+            {length: size.width, offset: size.width * index, index}
+          )}
         />
         {this.props.arrows && this._renderArrows(this.state.childrenLength)}
         {this.props.bullets && this._renderBullets(this.state.childrenLength)}
